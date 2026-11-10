@@ -101,13 +101,13 @@ export const translations = {
     contact: {
       eyebrow: "Join Rins",
       title:
-        "J<b>o</b>in us in b<b>u</b>ilding <br /> the biggest <br /> hygienic br<b>a</b>nd.",
+        "J<b>o</b>in us in b<b>u</b>ilding <br /> the biggest <br /> hygiene br<b>a</b>nd.",
       button: "contact us",
       leftAlt: "RINS Black Pocket Bidet, pack of 4",
       rightAlt: "RINS Blue Pocket Bidet, pack of 4",
     },
     footer: {
-      rights: "© rins.com. All rights reserved",
+      rights: "© rinstravel.com. All rights reserved",
       privacy: "Privacy Policy",
       email: "Email Rins",
       instagram: "Rins on Instagram",
@@ -254,7 +254,7 @@ export const translations = {
       rightAlt: "شطّاف الجيب الأزرق من رينز، عبوة من 4",
     },
     footer: {
-      rights: "© rins.com. جميع الحقوق محفوظة",
+      rights: "© rinstravel.com. جميع الحقوق محفوظة",
       privacy: "سياسة الخصوصية",
       email: "راسل رينز عبر البريد",
       instagram: "رينز على إنستغرام",
