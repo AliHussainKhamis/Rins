@@ -3,8 +3,11 @@ import { useRef } from "react";
 
 import Button from "./Button";
 import AnimatedTitle from "./AnimatedTitle";
+import { MediaPlaceholder } from "./Media";
+import { useLanguage } from "../utils/i18n";
 
 const FloatingImage = () => {
+  const { t } = useLanguage();
   const frameRef = useRef(null);
 
   const handleMouseMove = (e) => {
@@ -46,31 +49,32 @@ const FloatingImage = () => {
   };
 
   return (
-    <div id="story" className="min-h-dvh w-screen bg-black text-blue-50">
+    <div id="story" className="min-h-dvh w-screen bg-navy-900 text-navy-50">
       <div className="flex size-full flex-col items-center py-10 pb-24">
         <p className="font-general text-sm uppercase md:text-[10px]">
-          the multiversal ip world
+          {t("story.eyebrow")}
         </p>
 
         <div className="relative size-full">
           <AnimatedTitle
-            title="the st<b>o</b>ry of <br /> a hidden real<b>m</b>"
-            containerClass="mt-5 pointer-events-none mix-blend-difference relative z-10"
+            title={t("story.title")}
+            containerClass="mt-5 pointer-events-none relative z-10"
           />
 
           <div className="story-img-container">
             <div className="story-img-mask">
               <div className="story-img-content">
-                <img
+                {/* Placeholder: swap for <img src="/img/your-photo.jpg" ... /> */}
+                <div
                   ref={frameRef}
                   onMouseMove={handleMouseMove}
                   onMouseLeave={handleMouseLeave}
                   onMouseUp={handleMouseLeave}
                   onMouseEnter={handleMouseLeave}
-                  src="/img/entrance.webp"
-                  alt="entrance.webp"
-                  className="object-contain"
-                />
+                  className="size-full"
+                >
+                  <MediaPlaceholder label={t("media.storyPlaceholder")} />
+                </div>
               </div>
             </div>
 
@@ -105,15 +109,14 @@ const FloatingImage = () => {
 
         <div className="-mt-80 flex w-full justify-center md:-mt-64 md:me-44 md:justify-end">
           <div className="flex h-full w-fit flex-col items-center md:items-start">
-            <p className="mt-3 max-w-sm text-center font-circular-web text-violet-50 md:text-start">
-              Where realms converge, lies Zentry and the boundless pillar.
-              Discover its secrets and shape your fate amidst infinite
-              opportunities.
+            <p className="mt-3 max-w-sm text-center font-circular-web text-navy-100 md:text-start">
+              {t("story.body")}
             </p>
 
             <Button
               id="realm-btn"
-              title="discover prologue"
+              title={t("story.button")}
+              href="/products"
               containerClass="mt-5"
             />
           </div>

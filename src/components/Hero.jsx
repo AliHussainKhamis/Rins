@@ -1,30 +1,64 @@
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/all";
-import { TiLocationArrow } from "react-icons/ti";
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 
-import Button from "./Button";
 import VideoPreview from "./VideoPreview";
+import { useLanguage } from "../utils/i18n";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Hero slides in order; each can be a video or an image
+const heroMedia = [
+  "videos/hero-1.mp4",
+  "videos/english-story.mp4",
+  "videos/hero-2.mp4",
+];
+
+const totalVideos = heroMedia.length;
+
+const isImage = (src) => /\.(jpe?g|png|webp|avif|gif)$/i.test(src);
+
+// Renders a hero slide as <img> or <video> depending on the file type
+const HeroMedia = forwardRef(({ src, onLoad, autoPlay, ...props }, ref) => {
+  // An image's load event can fire before React listens for it, which would
+  // leave the loading screen up forever, so count images as ready right away
+  useEffect(() => {
+    if (isImage(src)) onLoad?.();
+  }, [src, onLoad]);
+
+  return isImage(src) ? (
+    <img ref={ref} src={src} alt="" {...props} />
+  ) : (
+    <video
+      ref={ref}
+      src={src}
+      loop
+      muted
+      autoPlay={autoPlay}
+      onLoadedData={onLoad}
+      {...props}
+    />
+  );
+});
+HeroMedia.displayName = "HeroMedia";
+
 const Hero = () => {
+  const { t } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(1);
   const [hasClicked, setHasClicked] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [loadedVideos, setLoadedVideos] = useState(0);
 
-  const totalVideos = 4;
   const nextVdRef = useRef(null);
 
-  const handleVideoLoad = () => {
+  const handleVideoLoad = useCallback(() => {
     setLoadedVideos((prev) => prev + 1);
-  };
+  }, []);
 
   useEffect(() => {
-    if (loadedVideos === totalVideos - 1) {
+    if (loadedVideos >= totalVideos - 1) {
       setLoading(false);
     }
   }, [loadedVideos]);
@@ -46,7 +80,7 @@ const Hero = () => {
           height: "100%",
           duration: 1,
           ease: "power1.inOut",
-          onStart: () => nextVdRef.current.play(),
+          onStart: () => nextVdRef.current?.play?.(),
         });
         gsap.from("#current-video", {
           transformOrigin: "center center",
@@ -80,12 +114,33 @@ const Hero = () => {
     });
   });
 
-  const getVideoSrc = (index) => `videos/hero-${index}.mp4`;
+  // Pause playing videos once the hero scrolls off screen, and resume them on return
+  useEffect(() => {
+    const frame = document.getElementById("video-frame");
+    let pausedVideos = [];
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        pausedVideos.forEach((video) => video.play().catch(() => {}));
+        pausedVideos = [];
+      } else {
+        pausedVideos = [...frame.querySelectorAll("video")].filter(
+          (video) => !video.paused
+        );
+        pausedVideos.forEach((video) => video.pause());
+      }
+    });
+    observer.observe(frame);
+
+    return () => observer.disconnect();
+  }, []);
+
+  const getVideoSrc = (index) => heroMedia[index - 1];
 
   return (
     <div className="relative h-dvh w-screen overflow-x-hidden">
       {loading && (
-        <div className="flex-center absolute z-[100] h-dvh w-screen overflow-hidden bg-violet-50">
+        <div className="flex-center absolute z-[100] h-dvh w-screen overflow-hidden bg-navy-700">
           {/* https://uiverse.io/G4b413l/tidy-walrus-92 */}
           <div className="three-body">
             <div className="three-body__dot"></div>
@@ -97,7 +152,7 @@ const Hero = () => {
 
       <div
         id="video-frame"
-        className="relative z-10 h-dvh w-screen overflow-hidden rounded-lg bg-blue-75"
+        className="relative z-10 h-dvh w-screen overflow-hidden rounded-lg bg-navy-900"
       >
         <div>
           <div className="mask-clip-path absolute-center absolute z-50 size-64 cursor-pointer overflow-hidden rounded-lg">
@@ -106,67 +161,45 @@ const Hero = () => {
                 onClick={handleMiniVdClick}
                 className="origin-center scale-50 opacity-0 transition-all duration-500 ease-in hover:scale-100 hover:opacity-100"
               >
-                <video
+                <HeroMedia
                   ref={nextVdRef}
                   src={getVideoSrc((currentIndex % totalVideos) + 1)}
-                  loop
-                  muted
                   id="current-video"
                   className="size-64 origin-center scale-150 object-cover object-center"
-                  onLoadedData={handleVideoLoad}
+                  onLoad={handleVideoLoad}
                 />
               </div>
             </VideoPreview>
           </div>
 
-          <video
+          <HeroMedia
             ref={nextVdRef}
             src={getVideoSrc(currentIndex)}
-            loop
-            muted
             id="next-video"
             className="absolute-center invisible absolute z-20 size-64 object-cover object-center"
-            onLoadedData={handleVideoLoad}
+            onLoad={handleVideoLoad}
           />
-          <video
+          <HeroMedia
             src={getVideoSrc(
               currentIndex === totalVideos - 1 ? 1 : currentIndex
             )}
             autoPlay
-            loop
-            muted
             className="absolute left-0 top-0 size-full object-cover object-center"
-            onLoadedData={handleVideoLoad}
+            onLoad={handleVideoLoad}
           />
         </div>
 
-        <h1 className="special-font hero-heading absolute bottom-5 right-5 z-40 text-blue-75">
-          G<b>A</b>MING
-        </h1>
+        <h1
+          className="special-font hero-heading absolute bottom-5 right-5 z-40 text-lime-300 sm:bottom-10 sm:right-10"
+          dangerouslySetInnerHTML={{ __html: t("hero.heading") }}
+        />
 
-        <div className="absolute left-0 top-0 z-40 size-full">
-          <div className="mt-24 px-5 sm:px-10">
-            <h1 className="special-font hero-heading text-blue-100">
-              redefi<b>n</b>e
-            </h1>
-
-            <p className="mb-5 max-w-64 font-robert-regular text-blue-100">
-              Enter the Metagame Layer <br /> Unleash the Play Economy
-            </p>
-
-            <Button
-              id="watch-trailer"
-              title="Watch trailer"
-              leftIcon={<TiLocationArrow />}
-              containerClass="bg-yellow-300 flex-center gap-1"
-            />
-          </div>
-        </div>
       </div>
 
-      <h1 className="special-font hero-heading absolute bottom-5 right-5 text-black">
-        G<b>A</b>MING
-      </h1>
+      <h1
+        className="special-font hero-heading absolute bottom-5 right-5 text-lime-300 sm:bottom-10 sm:right-10"
+        dangerouslySetInnerHTML={{ __html: t("hero.heading") }}
+      />
     </div>
   );
 };

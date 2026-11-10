@@ -1,28 +1,44 @@
-import { FaDiscord, FaTwitter, FaYoutube, FaMedium } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
+import { SiGmail } from "react-icons/si";
 
+import { useLanguage } from "../utils/i18n";
+
+// Each link gets its brand colours: Gmail red on white, Instagram's gradient
 const socialLinks = [
-  { href: "https://discord.com", icon: <FaDiscord /> },
-  { href: "https://twitter.com", icon: <FaTwitter /> },
-  { href: "https://youtube.com", icon: <FaYoutube /> },
-  { href: "https://medium.com", icon: <FaMedium /> },
+  {
+    key: "email",
+    href: "mailto:rinstravelbh@gmail.com",
+    icon: <SiGmail />,
+    className: "bg-white text-[#EA4335]",
+  },
+  {
+    key: "instagram",
+    href: "https://www.instagram.com/rins.travel/",
+    icon: <FaInstagram />,
+    className:
+      "bg-gradient-to-tr from-[#FEDA75] via-[#D62976] to-[#4F5BD5] text-white",
+  },
 ];
 
 const Footer = () => {
+  const { t } = useLanguage();
+
   return (
-    <footer className="w-screen bg-[#5542ff] py-4 text-black">
+    <footer className="w-screen bg-lime-300 py-4 text-navy-700">
       <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 md:flex-row">
-        <p className="text-center text-sm font-light md:text-left">
-          ©Nova 2024. All rights reserved
+        <p className="text-center text-sm font-light md:text-start">
+          {t("footer.rights")}
         </p>
 
-        <div className="flex justify-center gap-4  md:justify-start">
-          {socialLinks.map((link, index) => (
+        <div className="flex justify-center gap-3 md:justify-start">
+          {socialLinks.map((link) => (
             <a
-              key={index}
+              key={link.key}
               href={link.href}
-              target="_blank"
+              target={link.href.startsWith("http") ? "_blank" : undefined}
               rel="noopener noreferrer"
-              className="text-black transition-colors duration-500 ease-in-out hover:text-white"
+              aria-label={t(`footer.${link.key}`)}
+              className={`flex-center size-10 rounded-full text-xl shadow-md shadow-navy-700/20 transition-transform duration-300 hover:scale-110 ${link.className}`}
             >
               {link.icon}
             </a>
@@ -31,9 +47,9 @@ const Footer = () => {
 
         <a
           href="#privacy-policy"
-          className="text-center text-sm font-light hover:underline md:text-right"
+          className="text-center text-sm font-light hover:underline md:text-end"
         >
-          Privacy Policy
+          {t("footer.privacy")}
         </a>
       </div>
     </footer>

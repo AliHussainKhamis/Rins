@@ -2,13 +2,58 @@ import clsx from "clsx";
 import gsap from "gsap";
 import { useWindowScroll } from "react-use";
 import { useEffect, useRef, useState } from "react";
-import { TiLocationArrow } from "react-icons/ti";
 
-import Button from "./Button";
+import { useLanguage } from "../utils/i18n";
 
-const navItems = ["Nexus", "Vault", "Prologue", "About", "Contact"];
+const navItems = [
+  { key: "nav.products", href: "/products" },
+  { key: "nav.about", href: "/#about" },
+  { key: "nav.locations", href: "/#locations" },
+  { key: "nav.contact", href: "/#contact" },
+];
+
+const languages = [
+  { code: "en", label: "EN" },
+  { code: "ar", label: "عربي" },
+];
+
+// Pill switch with a lime highlight that slides to the active language
+const LanguageToggle = () => {
+  const { lang, setLang, t } = useLanguage();
+  const activeIndex = languages.findIndex((l) => l.code === lang);
+
+  return (
+    <div
+      dir="ltr"
+      role="group"
+      aria-label={t("nav.language")}
+      className="relative flex rounded-full border border-lime-300/30 bg-navy-950/60 p-1"
+    >
+      <span
+        className="absolute inset-y-1 left-1 w-14 rounded-full bg-lime-300 shadow-md shadow-lime-300/30 transition-transform duration-300 ease-out"
+        style={{ transform: `translateX(${activeIndex * 100}%)` }}
+      />
+      {languages.map((l) => (
+        <button
+          key={l.code}
+          onClick={() => setLang(l.code)}
+          aria-pressed={lang === l.code}
+          className={clsx(
+            "relative z-10 w-14 rounded-full py-1.5 text-center text-xs transition-colors duration-300",
+            l.code === "ar" ? "font-arabic font-bold" : "font-general",
+            lang === l.code ? "text-navy-700" : "text-navy-100 hover:text-white"
+          )}
+        >
+          {l.label}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 const NavBar = () => {
+  const { t } = useLanguage();
+
   // State for toggling audio and visual indicator
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isIndicatorActive, setIsIndicatorActive] = useState(false);
@@ -37,18 +82,12 @@ const NavBar = () => {
   }, [isAudioPlaying]);
 
   useEffect(() => {
-    if (currentScrollY === 0) {
-      // Topmost position: show navbar without floating-nav
+    if (currentScrollY === 0 || currentScrollY < lastScrollY) {
+      // At the top or scrolling up: show navbar
       setIsNavVisible(true);
-      navContainerRef.current.classList.remove("floating-nav");
     } else if (currentScrollY > lastScrollY) {
-      // Scrolling down: hide navbar and apply floating-nav
+      // Scrolling down: hide navbar
       setIsNavVisible(false);
-      navContainerRef.current.classList.add("floating-nav");
-    } else if (currentScrollY < lastScrollY) {
-      // Scrolling up: show navbar with floating-nav
-      setIsNavVisible(true);
-      navContainerRef.current.classList.add("floating-nav");
     }
 
     setLastScrollY(currentScrollY);
@@ -65,39 +104,42 @@ const NavBar = () => {
   return (
     <div
       ref={navContainerRef}
-      className="fixed inset-x-0 top-4 z-50 h-16 border-none transition-all duration-700 sm:inset-x-6"
+      className="fixed inset-x-0 top-4 z-50 h-16 transition-all duration-700 sm:inset-x-6"
     >
       <header className="absolute top-1/2 w-full -translate-y-1/2">
         <nav className="flex size-full items-center justify-between p-4">
-          {/* Logo and Product button */}
+          {/* Logo */}
           <div className="flex items-center gap-7">
-            <img src="/img/logo.png" alt="logo" className="w-10" />
-
-            <Button
-              id="product-button"
-              title="Products"
-              rightIcon={<TiLocationArrow />}
-              containerClass="bg-blue-50 md:flex hidden items-center justify-center gap-1"
-            />
+            <a
+              href="/"
+              aria-label={t("nav.home")}
+              className="flex-center size-[4.5rem] overflow-hidden rounded-full transition-transform duration-300 hover:scale-105"
+            >
+              <img src="/img/logo-rins.png" alt="RINS" className="size-full object-cover" />
+            </a>
           </div>
 
           {/* Navigation Links and Audio Button */}
-          <div className="flex h-full items-center">
+          <div className="floating-nav flex h-full items-center px-6 py-3">
             <div className="hidden md:block">
-              {navItems.map((item, index) => (
+              {navItems.map((item) => (
                 <a
-                  key={index}
-                  href={`#${item.toLowerCase()}`}
-                  className="nav-hover-btn"
+                  key={item.key}
+                  href={item.href}
+                  className="nav-hover-btn first:ms-0"
                 >
-                  {item}
+                  {t(item.key)}
                 </a>
               ))}
             </div>
 
+            <div className="md:ms-10">
+              <LanguageToggle />
+            </div>
+
             <button
               onClick={toggleAudioIndicator}
-              className="ml-10 flex items-center space-x-0.5"
+              className="ms-6 flex items-center gap-0.5"
             >
               <audio
                 ref={audioElementRef}

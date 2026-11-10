@@ -31,8 +31,8 @@ const AnimatedTitle = ({ title, containerClass }) => {
       );
     }, containerRef);
 
-    return () => ctx.revert(); // Clean up on unmount
-  }, []);
+    return () => ctx.revert(); // Clean up on unmount or when the title changes
+  }, [title]);
 
   return (
     <div ref={containerRef} className={clsx("animated-title", containerClass)}>

@@ -1,11 +1,18 @@
 import clsx from "clsx";
 
-const Button = ({ id, title, rightIcon, leftIcon, containerClass }) => {
+const Button = ({ id, title, rightIcon, leftIcon, containerClass, href }) => {
+  // Render as a link when given an href; external links open in a new tab
+  const Tag = href ? "a" : "button";
+  const linkProps = href?.startsWith("http")
+    ? { href, target: "_blank", rel: "noopener noreferrer" }
+    : { href };
+
   return (
-    <button
+    <Tag
       id={id}
+      {...(href && linkProps)}
       className={clsx(
-        "group relative z-10 w-fit cursor-pointer overflow-hidden rounded-full bg-violet-50 px-7 py-3 text-black",
+        "group relative z-10 w-fit cursor-pointer overflow-hidden rounded-full bg-lime-300 px-7 py-3 text-navy-700",
         containerClass
       )}
     >
@@ -21,7 +28,7 @@ const Button = ({ id, title, rightIcon, leftIcon, containerClass }) => {
       </span>
 
       {rightIcon}
-    </button>
+    </Tag>
   );
 };
 
