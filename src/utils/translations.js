@@ -84,7 +84,7 @@ export const translations = {
     story: {
       eyebrow: "the rins story",
       title: "the st<b>o</b>ry <br /> behind rins",
-      body: "Born in Manama, RINS set out to make travel hygiene simple, clean and confident, wherever the journey leads.",
+      body: "Born in Bahrain, RINS set out to make travel hygiene simple, clean and confident, wherever the journey leads.",
       button: "explore products",
     },
     reviews: {
@@ -232,7 +232,7 @@ export const translations = {
     story: {
       eyebrow: "قصة رينز",
       title: "القصة <br /> وراء رينز",
-      body: "وُلدت رينز في المنامة لتجعل النظافة أثناء السفر بسيطة ونظيفة ومريحة، أينما أخذتك الرحلة.",
+      body: "وُلدت رينز في البحرين لتجعل النظافة أثناء السفر بسيطة ونظيفة ومريحة، أينما أخذتك الرحلة.",
       button: "تصفّح المنتجات",
     },
     reviews: {
