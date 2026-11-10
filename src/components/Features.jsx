@@ -205,7 +205,7 @@ const Features = () => {
         <BentoTilt className="bento-tilt_2 h-64 md:h-96">
           <div className="flex size-full flex-col justify-between bg-lime-300 p-5">
             <h1
-              className="bento-title special-font max-w-64 text-navy-700"
+              className="bento-title special-font max-w-64 !text-[1.6rem] text-navy-700 sm:!text-4xl md:!text-6xl"
               dangerouslySetInnerHTML={{ __html: t("features.more") }}
             />
 

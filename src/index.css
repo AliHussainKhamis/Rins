@@ -157,12 +157,18 @@ body {
     @apply border-hsla relative flex min-h-96 w-[80vw] shrink-0 snap-center flex-col gap-5 rounded-3xl bg-navy-950 p-8 transition-[opacity,transform] duration-500 sm:w-[55vw] lg:w-[36vw];
   }
 
+  /* Thin slider dots keep their look but get a finger-sized invisible tap area */
+  .dot-hit {
+    @apply relative after:absolute after:-inset-x-1 after:-inset-y-4 after:content-[''];
+  }
+
   .review-arrow {
     @apply flex-center size-12 shrink-0 rounded-full bg-lime-300 text-2xl text-navy-900 transition-transform duration-200 hover:scale-110 active:scale-95;
   }
 
   .animated-title {
-    @apply flex flex-col gap-1 text-6xl uppercase leading-[.9] text-white sm:px-32 sm:text-7xl md:text-[6rem];
+    /* On phones the size follows the screen width, so long words never spill off the edge */
+    @apply flex flex-col gap-1 text-[12.5vw] uppercase leading-[.9] text-white sm:px-32 sm:text-7xl md:text-[6rem];
   }
 
   .animated-word {

@@ -350,7 +350,7 @@ const About = () => {
                 aria-current={index === activeSlide}
                 onClick={() => turnTo(index, index > activeSlide ? 1 : -1)}
                 className={clsx(
-                  "h-1.5 w-8 rounded-full transition-colors duration-300",
+                  "dot-hit h-1.5 w-8 rounded-full transition-colors duration-300",
                   index === activeSlide ? "bg-lime-300" : "bg-white/40"
                 )}
               />

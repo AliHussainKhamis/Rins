@@ -2,6 +2,7 @@ import clsx from "clsx";
 import gsap from "gsap";
 import { useWindowScroll } from "react-use";
 import { useEffect, useRef, useState } from "react";
+import { FaBars, FaTimes } from "react-icons/fa";
 
 import { useLanguage } from "../utils/i18n";
 
@@ -39,7 +40,7 @@ const LanguageToggle = () => {
           onClick={() => setLang(l.code)}
           aria-pressed={lang === l.code}
           className={clsx(
-            "relative z-10 w-14 rounded-full py-1.5 text-center text-xs transition-colors duration-300",
+            "relative z-10 w-14 rounded-full py-2.5 text-center text-xs transition-colors duration-300 md:py-1.5",
             l.code === "ar" ? "font-arabic font-bold" : "font-general",
             lang === l.code ? "text-navy-700" : "text-navy-100 hover:text-white"
           )}
@@ -65,6 +66,7 @@ const NavBar = () => {
   const { y: currentScrollY } = useWindowScroll();
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Toggle audio and visual indicator
   const toggleAudioIndicator = () => {
@@ -86,8 +88,9 @@ const NavBar = () => {
       // At the top or scrolling up: show navbar
       setIsNavVisible(true);
     } else if (currentScrollY > lastScrollY) {
-      // Scrolling down: hide navbar
+      // Scrolling down: hide navbar and close the phone menu
       setIsNavVisible(false);
+      setIsMenuOpen(false);
     }
 
     setLastScrollY(currentScrollY);
@@ -113,14 +116,14 @@ const NavBar = () => {
             <a
               href="/"
               aria-label={t("nav.home")}
-              className="flex-center size-[4.5rem] overflow-hidden rounded-full transition-transform duration-300 hover:scale-105"
+              className="flex-center size-14 shrink-0 overflow-hidden sm:size-[4.5rem] rounded-full transition-transform duration-300 hover:scale-105"
             >
               <img src="/img/logo-rins.png" alt="RINS" className="size-full object-cover" />
             </a>
           </div>
 
           {/* Navigation Links and Audio Button */}
-          <div className="floating-nav flex h-full items-center px-6 py-3">
+          <div className="floating-nav flex h-full items-center px-3 py-3 md:px-6">
             <div className="hidden md:block">
               {navItems.map((item) => (
                 <a
@@ -139,7 +142,8 @@ const NavBar = () => {
 
             <button
               onClick={toggleAudioIndicator}
-              className="ms-6 flex items-center gap-0.5"
+              aria-label={t("nav.sound")}
+              className="ms-1 flex h-10 items-center gap-0.5 px-3 md:ms-3"
             >
               <audio
                 ref={audioElementRef}
@@ -159,8 +163,33 @@ const NavBar = () => {
                 />
               ))}
             </button>
+
+            {/* Phones: the links live in a drop-down panel instead */}
+            <button
+              onClick={() => setIsMenuOpen((open) => !open)}
+              aria-label={t(isMenuOpen ? "nav.closeMenu" : "nav.openMenu")}
+              aria-expanded={isMenuOpen}
+              className="flex-center size-10 rounded-full bg-lime-300 text-lg text-navy-900 md:hidden"
+            >
+              {isMenuOpen ? <FaTimes /> : <FaBars />}
+            </button>
           </div>
         </nav>
+
+        {isMenuOpen && (
+          <div className="floating-nav absolute inset-x-4 top-full flex flex-col p-2 md:hidden">
+            {navItems.map((item) => (
+              <a
+                key={item.key}
+                href={item.href}
+                onClick={() => setIsMenuOpen(false)}
+                className="rounded-md px-4 py-4 font-general text-sm uppercase text-navy-50 active:bg-lime-300 active:text-navy-900"
+              >
+                {t(item.key)}
+              </a>
+            ))}
+          </div>
+        )}
       </header>
     </div>
   );

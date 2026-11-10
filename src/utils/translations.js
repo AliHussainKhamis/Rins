@@ -9,6 +9,9 @@ export const translations = {
       contact: "Contact",
       home: "RINS home",
       language: "Switch language",
+      openMenu: "Open menu",
+      closeMenu: "Close menu",
+      sound: "Play or pause music",
     },
     hero: {
       heading: "TR<b>A</b>VEL HYGIENE",
@@ -155,6 +158,9 @@ export const translations = {
       contact: "تواصل معنا",
       home: "الصفحة الرئيسية لرينز",
       language: "تغيير اللغة",
+      openMenu: "فتح القائمة",
+      closeMenu: "إغلاق القائمة",
+      sound: "تشغيل الموسيقى أو إيقافها",
     },
     hero: {
       heading: "نظافة السفر",

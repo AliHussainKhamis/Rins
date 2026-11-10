@@ -107,7 +107,8 @@ const FloatingImage = () => {
           </div>
         </div>
 
-        <div className="-mt-80 flex w-full justify-center md:-mt-64 md:me-44 md:justify-end">
+        {/* On phones the text starts just below the picture (which ends at 50dvh + 4rem) */}
+        <div className="relative z-10 -mt-[calc(40vh-5.5rem)] flex w-full justify-center px-5 md:-mt-64 md:me-44 md:justify-end md:px-0">
           <div className="flex h-full w-fit flex-col items-center md:items-start">
             <p className="mt-3 max-w-sm text-center font-circular-web text-navy-100 md:text-start">
               {t("story.body")}

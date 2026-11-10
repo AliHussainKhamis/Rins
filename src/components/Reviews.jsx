@@ -177,7 +177,7 @@ const ReviewsSlider = ({ reviews }) => {
               aria-current={index === active}
               onClick={() => centerCard(trackRef.current, index)}
               className={clsx(
-                "h-1.5 w-8 rounded-full transition-colors duration-300",
+                "dot-hit h-1.5 w-8 rounded-full transition-colors duration-300",
                 index === active ? "bg-lime-300" : "bg-white/30"
               )}
             />
